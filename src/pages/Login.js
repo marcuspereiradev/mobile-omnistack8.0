@@ -1,10 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
+import API from '../services/Api';
 
 import { View, Image, StyleSheet, TextInput, TouchableOpacity, Text } from 'react-native';
 
 import logo from '../assets/logo.png';
 
-const Login = () => {
+const Login = ({ navigation }) => {
+  const [user, setUser] = useState('');
+
+  async function handleLogin() {
+    const response = await API.post('/devs', { username: user });
+    const { _id } = response.data;
+    console.log(_id);
+    navigation.navigate('Main', { _id });
+  }
+
   return (
     <View style={styles.container}>
       <Image source={logo} />
@@ -15,9 +25,11 @@ const Login = () => {
         autoCapitalize='none'
         autoCorrect={false}
         style={styles.input}
+        value={user}
+        onChangeText={setUser}
       />
 
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity onPress={handleLogin} style={styles.button}>
         <Text style={styles.buttonText}>Entrar</Text>
       </TouchableOpacity>
     </View>
